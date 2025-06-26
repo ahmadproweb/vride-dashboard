@@ -1,9 +1,10 @@
-import { Routes, Route ,  Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import SideNavbar from "./layout/SideNavbar.jsx";
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
 import { Toaster } from "react-hot-toast";
 import TopNavbar from "./layout/TopNavbar.jsx";
+import ProtectedRoute from "./utils/ProtectedRoute.js";
 function App() {
 
   return (
@@ -20,12 +21,18 @@ function App() {
           <Route
             path="/dashboard"
             element={
-              <Home />
+              <ProtectedRoute>
+
+                <Home />
+              </ProtectedRoute>
             }
           />  <Route
             path="/"
             element={
-              <Home />
+              <ProtectedRoute>
+
+                <Home />
+              </ProtectedRoute>
             }
           />
           <Route

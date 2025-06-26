@@ -35,10 +35,10 @@ const SideNavbar = () => {
             {links.map((link) => (
               <li
                 key={link.path}
-                className={`navItem ${location.pathname === link.path ? "active" : ""}`}
+                className={`navItem active`}
                 onClick={() => window.innerWidth <= 922 && setIsOpen(false)}
               >
-                <Link to={link.path} className="link">
+                <Link style={{backgroundColor:location.pathname === link.path?'#FFD200':''}} to={link.path} className="link">
                   {link.icon}
                   <span>{link.label}</span>
                 </Link>

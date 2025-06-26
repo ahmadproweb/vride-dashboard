@@ -1,5 +1,7 @@
+import { Link, useNavigate } from "react-router-dom";
 
 const TopNavbar = () => {
+  const navigator = useNavigate();
   
   return (
     <>
@@ -10,7 +12,14 @@ const TopNavbar = () => {
           </div>
           <span>Admin</span>
         </div>
-        <button >Logout</button>
+       
+        
+        <button onClick={()=>{
+          navigator('/login');
+          localStorage.removeItem('key')
+
+        }}>Logout</button>
+        
       </div>
       <hr />
     </>

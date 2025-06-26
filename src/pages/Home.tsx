@@ -1,36 +1,51 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import { CiSearch } from 'react-icons/ci';
+import { CiBookmarkCheck, CiSearch } from 'react-icons/ci';
 import { MdAutoDelete } from 'react-icons/md';
+import AdminServices from '../services/AdminServices';
+import type { Car } from '@/types/Vehicles';
 
-const dummyVehicles = [
-  {
-    id: 1,
-    make: 'Toyota',
-    model: 'Corolla',
-    color: 'White',
-    dailyRent: 5000,
-    vehicleType: 'Sedan',
-    fuelType: 'Petrol',
-    transmissionType: 'Automatic',
-    images: [
-      'https://imageio.forbes.com/specials-images/imageserve/5d3703e2f1176b00089761a6/2020-Chevrolet-Corvette-Stingray/0x0.jpg?crop=4560,2565,x836,y799,safe&height=399&width=711&fit=bounds',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQyHeIluJlieyZ0dCwRipoNIaeJuEufTcQMw&s',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNnim_zaw2WVOgAeC2s-kF0Zyl4pAvPoQeK9oUq_Yy0VBlRGYZdY2pMKd0ocYkydFfCYs&usqp=CAU',
-      'https://media.architecturaldigest.com/photos/66a914f1a958d12e0cc94a8e/16:9/w_2992,h_1683,c_limit/DSC_5903.jpg',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJro0A1CWbPg_negbklIsCGvncchxIOLTlQA&s',
-    ],
-    city: 'Lahore',
-    address: 'Model Town',
-  },
-];
+const adminServices = new AdminServices();
 
 const Home = () => {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
+  const [hasMoreData, sethasMoreData] = useState(true);
+  const [search, setsearch] = useState('')
   const [modalImages, setModalImages] = useState([]);
+  const [vehicles, setvehicles] = useState<Car[] | []>([]);
+  const [loading, setloading] = useState(false);
+  const [pages, setpages] = useState(1);
+  const limit = 10;
 
-  const openImageModal = (images) => {
+  useEffect(()=>{
+    fetchCars();
+    
+  },[pages]);
+  
+  const fetchCars = async()=>{
+    try {
+      setloading(true)
+       await adminServices.fetchAllCars(pages,limit)
+      .then((res)=>{
+        setloading(false);
+        if(res.length<limit){
+          sethasMoreData(false);
+        }
+        setvehicles((prev)=>[...prev,...res].filter((v, i, arr)=>arr.findIndex(t => t.id === v.id) === i))
+
+      })
+      .catch((error:any)=>{
+        setloading(false);
+        console.error(error)
+      })
+    } catch (error:any) {
+      setloading(false);
+    }
+  }
+
+  const openImageModal = (images:any) => {
+   
     setModalImages(images);
     setActiveImageIndex(0);
     setModalOpen(true);
@@ -49,8 +64,17 @@ const Home = () => {
   const nextImage = () => {
     setActiveImageIndex((prev) => (prev === modalImages.length - 1 ? 0 : prev + 1));
   };
+   
+    
+    
+
+  
+
+  
 
   return (
+    <>
+    
     <div className="appointments">
       <h2 className="title">Vehicles:</h2>
 
@@ -66,20 +90,22 @@ const Home = () => {
               <th>#</th>
               <th>Vehicle</th>
               <th>Type</th>
-              <th>Fuel</th>
+              <th>Vehicle #Id</th>
               <th>Rent/Day</th>
               <th>City</th>
               <th>Images</th>
-              <th>Action</th>
+              <th>Delete</th>
+              <th>Approve</th>
+
             </tr>
           </thead>
           <tbody>
-            {dummyVehicles.map((vehicle, i) => (
+            {vehicles.map((vehicle, i) => (
               <tr key={vehicle.id}>
                 <td>{i + 1}</td>
                 <td>{vehicle.make} {vehicle.model}</td>
                 <td>{vehicle.vehicleType}</td>
-                <td>{vehicle.fuelType}</td>
+                <td>{vehicle.id}</td>
                 <td>{vehicle.dailyRent} PKR</td>
                 <td>{vehicle.city}</td>
                 <td>
@@ -88,7 +114,16 @@ const Home = () => {
                   </span>
                 </td>
                 <td>
-                <MdAutoDelete className="delete-icon"/>
+                <MdAutoDelete onClick={()=>{
+                  adminServices.deleteCar(vehicle.id);
+                  window.location.reload();
+                }} className="delete-icon"/>
+                </td>
+                <td style={{cursor:'pointer'}} onClick={()=>{
+                  adminServices.approveAd(vehicle.id);
+                  window.location.reload();
+                }}>
+                {vehicle.isApproved?'DisApprove':'Approve'}
                 </td>
               </tr>
             ))}
@@ -117,8 +152,15 @@ const Home = () => {
     </div>
   </div>
 )}
+  <div style={{padding:10,display:'flex',flexDirection:'row',gap:20}}>
+    <button disabled={!hasMoreData} onClick={()=>setpages(pages+1)} style={{padding:10,backgroundColor:'#FFD200',borderRadius:'20px',cursor:'pointer'}}>
+      {loading?<div className='loader'></div>:'Load More'}
+    </button>
+  </div>
 
     </div>
+    
+    </>
   );
 };
 
