@@ -8,7 +8,7 @@ class AdminServices{
     };
 
     async fetchAllCars(page:number,limit:number):Promise<Car[]>{
-        return this.apiClient.get<any>('',{
+        return this.apiClient.get<any>('/dashboard',{
             params:{
                 page,
                 limit

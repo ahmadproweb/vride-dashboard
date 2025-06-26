@@ -12,6 +12,7 @@ const Home = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [hasMoreData, sethasMoreData] = useState(true);
   const [search, setsearch] = useState('')
+  const [allVehicles, setAllVehicles] = useState<Car[]>([]);
   const [modalImages, setModalImages] = useState([]);
   const [vehicles, setvehicles] = useState<Car[] | []>([]);
   const [loading, setloading] = useState(false);
@@ -32,7 +33,9 @@ const Home = () => {
         if(res.length<limit){
           sethasMoreData(false);
         }
-        setvehicles((prev)=>[...prev,...res].filter((v, i, arr)=>arr.findIndex(t => t.id === v.id) === i))
+        const combine = [...allVehicles,...res].filter((v,i,arr)=>arr.findIndex(t=>t.id===v.id)===i);
+        setvehicles(combine);
+        setAllVehicles(combine);
 
       })
       .catch((error:any)=>{
@@ -65,6 +68,30 @@ const Home = () => {
     setActiveImageIndex((prev) => (prev === modalImages.length - 1 ? 0 : prev + 1));
   };
    
+
+  const handleSearch=(search:any)=>{
+   
+    if(search.trim()===""){
+      setvehicles(allVehicles);
+      return;
+    };
+
+    const filtered = allVehicles.filter((item)=>
+    item.model.toLowerCase().includes(search.toLowerCase()) ||
+    item.make.toLowerCase().includes(search.toLowerCase()) ||
+    item.licensePlateNumber.toLowerCase().includes(search.toLowerCase()) ||
+    item.owner?.name.toLowerCase().includes(search.toLowerCase()) 
+    );
+
+    setvehicles(filtered);
+
+
+  };
+
+  useEffect(()=>{
+   handleSearch(search)
+
+  },[search])
     
     
 
@@ -79,7 +106,7 @@ const Home = () => {
       <h2 className="title">Vehicles:</h2>
 
       <div className="search">
-        <input type="search" placeholder="Search vehicles..." />
+        <input value={search} onChange={(e)=>setsearch(e.target.value)} type="search" placeholder="Search vehicles..." />
         <CiSearch className="search-icon" />
       </div>
 
@@ -87,28 +114,28 @@ const Home = () => {
         <table className="appointment-table">
           <thead>
             <tr>
-              <th>#</th>
-              <th>Vehicle</th>
-              <th>Type</th>
-              <th>Vehicle #Id</th>
-              <th>Rent/Day</th>
-              <th>City</th>
-              <th>Images</th>
-              <th>Delete</th>
-              <th>Approve</th>
+              <th style={{fontSize:16}}>#</th>
+              <th style={{fontSize:16}}>Vehicle</th>
+              <th style={{fontSize:16}}>Registeration No.</th>
+              <th style={{fontSize:16}}>Owner</th>
+              <th style={{fontSize:16}}>Rent/Day</th>
+              <th style={{fontSize:16}}>City</th>
+              <th style={{fontSize:16}}>Images</th>
+              <th style={{fontSize:16}}>Delete</th>
+              <th style={{fontSize:16}}>Approve</th>
 
             </tr>
           </thead>
           <tbody>
             {vehicles.map((vehicle, i) => (
               <tr key={vehicle.id}>
-                <td>{i + 1}</td>
-                <td>{vehicle.make} {vehicle.model}</td>
-                <td>{vehicle.vehicleType}</td>
-                <td>{vehicle.id}</td>
-                <td>{vehicle.dailyRent} PKR</td>
-                <td>{vehicle.city}</td>
-                <td>
+                <td style={{fontSize:15}}>{i + 1}</td>
+                <td style={{fontSize:15}}>{vehicle.make} {vehicle.model}</td>
+                <td style={{fontSize:15}}>{vehicle.licensePlateNumber}</td>
+                <td style={{fontSize:15}}>{vehicle.owner?.name}</td>
+                <td style={{fontSize:15}}>{vehicle.dailyRent} PKR</td>
+                <td style={{fontSize:15}}>{vehicle.city}</td>
+                <td style={{fontSize:15}}>
                   <span onClick={() => openImageModal(vehicle.images)} className='view-images'>
                     View Images
                   </span>
@@ -119,7 +146,7 @@ const Home = () => {
                   window.location.reload();
                 }} className="delete-icon"/>
                 </td>
-                <td style={{cursor:'pointer'}} onClick={()=>{
+                <td style={{cursor:'pointer',fontSize:15}} onClick={()=>{
                   adminServices.approveAd(vehicle.id);
                   window.location.reload();
                 }}>
