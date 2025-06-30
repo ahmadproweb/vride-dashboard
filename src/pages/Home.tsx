@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import { CiBookmarkCheck, CiSearch } from 'react-icons/ci';
+import { CiSearch } from 'react-icons/ci';
 import { MdAutoDelete } from 'react-icons/md';
 import AdminServices from '../services/AdminServices';
 import type { Car } from '@/types/Vehicles';
