@@ -8,6 +8,12 @@ class UserDataService{
 
     async fetchOwnerData():Promise<any>{
         return this.apiClient.get<any>('')
+    };
+
+    async updateCredits(credits:number,id:number):Promise<any>{
+        
+        return this.apiClient.put<any,any>(`${id}/credits`,{credits})
+        
     }
 };
 

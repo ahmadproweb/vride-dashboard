@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { CiSearch } from 'react-icons/ci';
-import { MdAutoDelete } from 'react-icons/md';
+import { MdAddBox, MdAutoDelete } from 'react-icons/md';
 import AdminServices from '../services/AdminServices';
 import type { Car } from '@/types/Vehicles';
 import { updateData } from '../utils/OwnerData';
+import CreditModal from '../Components/CreditModal';
 
 const adminServices = new AdminServices();
 
 const Home = () => {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
+  const [addCredits, setaddCredits] = useState(false);
   const [hasMoreData, sethasMoreData] = useState(true);
   const [search, setsearch] = useState('')
   const [allVehicles, setAllVehicles] = useState<Car[]>([]);
@@ -18,6 +20,8 @@ const Home = () => {
   const [vehicles, setvehicles] = useState<Car[] | []>([]);
   const [loading, setloading] = useState(false);
   const [pages, setpages] = useState(1);
+  const [userId, setuserId] = useState(0);
+  const [credits, setcredits] = useState(0);
   const limit = 10;
 
   useEffect(() => {
@@ -130,6 +134,9 @@ const Home = () => {
                   <th style={{ fontSize: 16 }}>Images</th>
                   <th style={{ fontSize: 16 }}>Delete</th>
                   <th style={{ fontSize: 16 }}>Approve</th>
+                  <th style={{ fontSize: 16 }}>Credits</th>
+                  <th style={{ fontSize: 16 }}>Add Credits</th>
+
 
                 </tr>
               </thead>
@@ -159,6 +166,17 @@ const Home = () => {
                     }}>
                       {vehicle.isApproved ? 'DisApprove' : 'Approve'}
                     </td>
+                    <td style={{ fontSize: 15 }}>{vehicle.owner?.credits}</td>
+                     <td onClick={()=>{
+                      setaddCredits(true);
+                      setuserId(vehicle.ownerId);
+                      setcredits(vehicle.owner?.credits as number)
+                     }}>
+                      <MdAddBox onClick={() => {
+                       
+                      }} className="add-icon" />
+                    </td>
+
                   </tr>
                 ))}
               </tbody>
@@ -189,6 +207,7 @@ const Home = () => {
             </div>
           </div>
         )}
+        <CreditModal show={addCredits} onClose={setaddCredits} id={userId} creditsPass={credits} />
         <div style={{ padding: 10, display: 'flex', flexDirection: 'row', gap: 20 }}>
           <button disabled={!hasMoreData} onClick={() => setpages(pages + 1)} style={{ padding: 10, backgroundColor: '#FFD200', borderRadius: '20px', cursor: 'pointer' }}>
             {loading ? <div className='loader'></div> : 'Load More'}

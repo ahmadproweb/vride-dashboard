@@ -7,4 +7,5 @@ export type UserAttributes= {
     userType: 'user' | 'admin';
     profileImg?: string; // Optional profile image field
     cnic:string;
+    credits:number;
 }

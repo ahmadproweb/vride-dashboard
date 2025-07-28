@@ -22,7 +22,9 @@ class AdminServices{
 
     async approveAd(id:number):Promise<void>{
         return this.apiClient.put<any,any>(`${id}/approveAd`,{})
-    }
+    };
+
+    
 };
 
 export default AdminServices
