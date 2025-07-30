@@ -104,7 +104,7 @@ const Home = () => {
     handleSearch(search)
 
   }, [search])
-  console.log(vehicles, '');
+ 
 
 
   return (

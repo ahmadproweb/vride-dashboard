@@ -21,8 +21,7 @@ class AdminServices{
     };
 
     async approveAd(id:number):Promise<void>{
-        console.log(id,'');
-        
+       
         return this.apiClient.put<any,any>(`/${id}/approveAd`,{})
     };
 

@@ -5,8 +5,7 @@ import type { UserAttributes } from "@/types/Users";
 const userServices = new UserDataService();
 
 export const updateData=async(data:Car[])=>{
-    console.log(data[0].isApproved,'')
-   
+  
     const users:UserAttributes[] = await userServices.fetchOwnerData();
     const userMap = new Map(users.map(user=>[user.id,user]));
 

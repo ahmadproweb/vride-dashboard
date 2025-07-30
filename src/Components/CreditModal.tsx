@@ -9,7 +9,6 @@ const CreditModal = ({ show, onClose, id,creditsPass }: any) => {
     
     const [credits, setcredits] = useState(0);
     const handleAddCredits = async (e: any) => {
-        console.log('submits', credits);
         e.preventDefault();
         const creditsToAdd = creditsPass + credits;
         await userServices.updateCredits(creditsToAdd, id)
