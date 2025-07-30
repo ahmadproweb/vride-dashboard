@@ -104,6 +104,8 @@ const Home = () => {
     handleSearch(search)
 
   }, [search])
+  console.log(vehicles, '');
+
 
   return (
     <>
@@ -118,7 +120,7 @@ const Home = () => {
 
         <div className="table-container">
           {!loading && vehicles.length === 0 ? (
-            <div style={{textAlign:'center'}}>
+            <div style={{ textAlign: 'center' }}>
               <h1>No Vehicles Available</h1>
             </div>
           ) : (
@@ -129,6 +131,7 @@ const Home = () => {
                   <th style={{ fontSize: 16 }}>Vehicle</th>
                   <th style={{ fontSize: 16 }}>Registeration No.</th>
                   <th style={{ fontSize: 16 }}>Owner</th>
+                  <th style={{ fontSize: 16 }}>Contact</th>
                   <th style={{ fontSize: 16 }}>Rent/Day</th>
                   <th style={{ fontSize: 16 }}>City</th>
                   <th style={{ fontSize: 16 }}>Images</th>
@@ -147,6 +150,7 @@ const Home = () => {
                     <td style={{ fontSize: 15 }}>{vehicle.make} {vehicle.model}</td>
                     <td style={{ fontSize: 15 }}>{vehicle.licensePlateNumber}</td>
                     <td style={{ fontSize: 15 }}>{vehicle.owner?.name}</td>
+                    <td style={{ fontSize: 15 }}>{vehicle.owner?.phone}</td>
                     <td style={{ fontSize: 15 }}>{vehicle.dailyRent} PKR</td>
                     <td style={{ fontSize: 15 }}>{vehicle.city}</td>
                     <td style={{ fontSize: 15 }}>
@@ -155,25 +159,25 @@ const Home = () => {
                       </span>
                     </td>
                     <td>
-                      <MdAutoDelete onClick={() => {
-                        adminServices.deleteCar(vehicle.id);
+                      <MdAutoDelete onClick={async () => {
+                        await adminServices.deleteCar(vehicle.id);
                         window.location.reload();
                       }} className="delete-icon" />
                     </td>
-                    <td style={{ cursor: 'pointer', fontSize: 15 }} onClick={() => {
-                      adminServices.approveAd(vehicle.id);
+                    <td style={{ cursor: 'pointer', fontSize: 15 }} onClick={async () => {
+                      await adminServices.approveAd(vehicle.id);
                       window.location.reload();
                     }}>
                       {vehicle.isApproved ? 'DisApprove' : 'Approve'}
                     </td>
                     <td style={{ fontSize: 15 }}>{vehicle.owner?.credits}</td>
-                     <td onClick={()=>{
+                    <td onClick={() => {
                       setaddCredits(true);
                       setuserId(vehicle.ownerId);
                       setcredits(vehicle.owner?.credits as number)
-                     }}>
+                    }}>
                       <MdAddBox onClick={() => {
-                       
+
                       }} className="add-icon" />
                     </td>
 
@@ -189,7 +193,7 @@ const Home = () => {
           <div className="appointments__modal-overlay" onClick={closeImageModal}>
             <div className="appointments__modal-content" onClick={(e) => e.stopPropagation()}>
               <img
-             
+
                 src={modalImages[activeImageIndex]}
                 alt="carousel"
                 className="appointments__modal-image"
