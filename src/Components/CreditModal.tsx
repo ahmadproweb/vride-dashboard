@@ -4,24 +4,26 @@ import UserDataService from '../services/UserDataServices';
 
 const userServices = new UserDataService();
 
-const CreditModal = ({ show, onClose, id,creditsPass }: any) => {
+const CreditModal = ({ show, onClose, id,creditsPass,fetchCars }: any) => {
     const userId = parseInt(id);
-    
+   
     const [credits, setcredits] = useState(0);
     const handleAddCredits = async (e: any) => {
         e.preventDefault();
         const creditsToAdd = creditsPass + credits;
-        await userServices.updateCredits(creditsToAdd, id)
-            .then((res) => {
-               window.location.reload();
-            })
-            .catch((err) => {
-                console.error(err, 'error')
-            });
+        try {
+            
+           const response  =  await userServices.updateCredits(creditsToAdd, id)
+           if(response){
 
-
-
-
+               await fetchCars();
+               onClose(!show)
+           }
+           
+        } catch (error) {
+            
+        }
+        
 
     }
     if (!show) return null;

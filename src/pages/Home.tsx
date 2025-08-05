@@ -6,6 +6,7 @@ import AdminServices from '../services/AdminServices';
 import type { Car } from '@/types/Vehicles';
 import { updateData } from '../utils/OwnerData';
 import CreditModal from '../Components/CreditModal';
+import LoadingModal from '../Components/LoadingModal';
 
 const adminServices = new AdminServices();
 
@@ -22,6 +23,8 @@ const Home = () => {
   const [pages, setpages] = useState(1);
   const [userId, setuserId] = useState(0);
   const [credits, setcredits] = useState(0);
+  const [actionReload, setactionReload] = useState(false);
+
   const limit = 10;
 
   useEffect(() => {
@@ -29,35 +32,46 @@ const Home = () => {
 
   }, [pages]);
 
+  localStorage.setItem('pages', JSON.stringify(pages))
 
 
-  const fetchCars = async () => {
-    try {
-      setloading(true)
-      await adminServices.fetchAllCars(pages, limit)
-        .then((res) => {
-          return updateData(res)
-            .then((res) => {
 
-              setloading(false);
-              if (res.length < limit) {
-                sethasMoreData(false);
-              }
-              const combine: any = [...allVehicles, ...res].filter((v, i, arr) => arr.findIndex(t => t.id === v.id) === i);
-              setvehicles(combine);
-              setAllVehicles(combine);
-            })
+  const fetchCars = () => {
+    setloading(true);
+    const localPages = parseInt(localStorage.getItem('pages') || '1');
+    const combinedResults: any[] = [];
+
+    const fetchPage = (i: number): Promise<void> => {
+      return adminServices.fetchAllCars(i, limit)
+        .then(res => updateData(res))
+        .then(updated => {
+          combinedResults.push(...updated);
+          if (updated.length < limit) {
+            sethasMoreData(false);
+            return Promise.resolve();
+          }
+          if (i < localPages) {
+            return fetchPage(i + 1);
+          }
+          return Promise.resolve();
+        });
+    };
+
+    fetchPage(1)
+      .then(() => {
+        const unique = combinedResults.filter((v, i, arr) => arr.findIndex(t => t.id === v.id) === i);
+        setvehicles(unique);
+        setAllVehicles(unique);
+      })
+      .catch(error => {
+        console.error('Fetch failed:', error);
+      })
+      .finally(() => {
+        setloading(false);
+      });
+  };
 
 
-        })
-        .catch((error: any) => {
-          setloading(false);
-          console.error(error)
-        })
-    } catch (error: any) {
-      setloading(false);
-    }
-  }
 
   const openImageModal = (images: any) => {
 
@@ -104,7 +118,7 @@ const Home = () => {
     handleSearch(search)
 
   }, [search])
- 
+
 
 
   return (
@@ -118,6 +132,8 @@ const Home = () => {
           <CiSearch className="search-icon" />
         </div>
 
+
+        
         <div className="table-container">
           {!loading && vehicles.length === 0 ? (
             <div style={{ textAlign: 'center' }}>
@@ -160,25 +176,54 @@ const Home = () => {
                     </td>
                     <td>
                       <MdAutoDelete onClick={async () => {
-                        await adminServices.deleteCar(vehicle.id);
-                        window.location.reload();
+                        try {
+                          setactionReload(true)
+                          await adminServices.deleteCar(vehicle.id);
+                          localStorage.setItem('pages', JSON.stringify(pages));
+                          await fetchCars()
+
+                        } catch (error) {
+                          setactionReload(false);
+                        }
+                        finally{
+                          setactionReload(false)
+                        }
                       }} className="delete-icon" />
                     </td>
                     <td style={{ cursor: 'pointer', fontSize: 15 }} onClick={async () => {
-                      await adminServices.approveAd(vehicle.id);
-                      window.location.reload();
+                      try {
+                        setactionReload(true);
+                        await adminServices.approveAd(vehicle.id);
+                        localStorage.setItem('pages', JSON.stringify(pages));
+                        await fetchCars()
+                        
+                      } catch (error) {
+                        setactionReload(false)
+
+                      }
+                      finally{
+                        setactionReload(false)
+                      }
                     }}>
                       {vehicle.isApproved ? 'DisApprove' : 'Approve'}
                     </td>
                     <td style={{ fontSize: 15 }}>{vehicle.owner?.credits}</td>
-                    <td onClick={() => {
-                      setaddCredits(true);
-                      setuserId(vehicle.ownerId);
-                      setcredits(vehicle.owner?.credits as number)
-                    }}>
-                      <MdAddBox onClick={() => {
+                    <td >
+                      <MdAddBox
 
-                      }} className="add-icon" />
+                      onClick={async() =>{
+                      try {
+                        
+                        setaddCredits(true);
+                        localStorage.setItem('pages', JSON.stringify(pages));
+                        setuserId(vehicle.ownerId);
+                        setcredits(vehicle.owner?.credits as number)
+                      } catch (error) {
+                        
+                      }
+                      
+                    }}
+                       className="add-icon" />
                     </td>
 
                   </tr>
@@ -188,6 +233,8 @@ const Home = () => {
           )}
 
         </div>
+
+
 
         {modalOpen && (
           <div className="appointments__modal-overlay" onClick={closeImageModal}>
@@ -211,9 +258,10 @@ const Home = () => {
             </div>
           </div>
         )}
-        <CreditModal show={addCredits} onClose={setaddCredits} id={userId} creditsPass={credits} />
+        <CreditModal show={addCredits} onClose={setaddCredits} id={userId} creditsPass={credits} fetchCars={fetchCars} />
+        <LoadingModal show={actionReload} onClose={setactionReload}/>
         <div style={{ padding: 10, display: 'flex', flexDirection: 'row', gap: 20 }}>
-          <button disabled={!hasMoreData} onClick={() => setpages(pages + 1)} style={{ padding: 10, backgroundColor: '#FFD200', borderRadius: '20px', cursor: 'pointer' }}>
+          <button disabled={!hasMoreData} onClick={() => { setpages(pages + 1), localStorage.setItem('pages', JSON.stringify(pages)) }} style={{ padding: 10, backgroundColor: '#FFD200', borderRadius: '20px', cursor: 'pointer' }}>
             {loading ? <div className='loader'></div> : 'Load More'}
           </button>
         </div>
