@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import './modal.scss';
 import UserDataService from '../services/UserDataServices';
 
 const userServices = new UserDataService();
 
 const CreditModal = ({ show, onClose, id,creditsPass,fetchCars }: any) => {
-    const userId = parseInt(id);
    
     const [credits, setcredits] = useState(0);
     const handleAddCredits = async (e: any) => {
