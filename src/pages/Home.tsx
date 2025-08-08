@@ -148,6 +148,7 @@ const Home = () => {
                   <th style={{ fontSize: 16 }}>Registeration No.</th>
                   <th style={{ fontSize: 16 }}>Owner</th>
                   <th style={{ fontSize: 16 }}>Contact</th>
+                  <th style={{ fontSize: 16 }}>CNIC</th>
                   <th style={{ fontSize: 16 }}>Rent/Day</th>
                   <th style={{ fontSize: 16 }}>City</th>
                   <th style={{ fontSize: 16 }}>Images</th>
@@ -167,6 +168,7 @@ const Home = () => {
                     <td style={{ fontSize: 15 }}>{vehicle.licensePlateNumber}</td>
                     <td style={{ fontSize: 15 }}>{vehicle.owner?.name}</td>
                     <td style={{ fontSize: 15 }}>{vehicle.owner?.phone}</td>
+                    <td style={{ fontSize: 15 }}>{vehicle.owner?.cnic}</td>
                     <td style={{ fontSize: 15 }}>{vehicle.dailyRent} PKR</td>
                     <td style={{ fontSize: 15 }}>{vehicle.city}</td>
                     <td style={{ fontSize: 15 }}>

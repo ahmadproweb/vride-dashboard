@@ -35,6 +35,7 @@ export type Car = {
                 phone: string;
                 email: string;
                 credits?:number;
+                cnic?:string
         }
         rating: number | null;
         isListed?:boolean;
