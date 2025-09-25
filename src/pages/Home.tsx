@@ -7,6 +7,10 @@ import type { Car } from '@/types/Vehicles';
 import { updateData } from '../utils/OwnerData';
 import CreditModal from '../Components/CreditModal';
 import LoadingModal from '../Components/LoadingModal';
+import { CategoryDispatcher } from '../utils/CategoryDispatcher';
+import { BiPencil } from 'react-icons/bi';
+import CategoryModal from '../Components/CategoryModal';
+import BodyTypeModal from '../Components/BodyTypeModal';
 
 const adminServices = new AdminServices();
 
@@ -24,6 +28,12 @@ const Home = () => {
   const [userId, setuserId] = useState(0);
   const [credits, setcredits] = useState(0);
   const [actionReload, setactionReload] = useState(false);
+  const [isCategory, setisCategory] = useState(false);
+  const [isBodyType, setisBodyType] = useState(false);
+  const [currentCateg, setcurrentCateg] = useState('');
+  const [selectedCar, setselectedCar] = useState<Car>();
+
+
 
   const limit = 10;
 
@@ -60,8 +70,9 @@ const Home = () => {
     fetchPage(1)
       .then(() => {
         const unique = combinedResults.filter((v, i, arr) => arr.findIndex(t => t.id === v.id) === i);
-        setvehicles(unique);
-        setAllVehicles(unique);
+        const sortedData = unique.sort((a,b)=>new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        setvehicles(sortedData);
+        setAllVehicles(sortedData);
       })
       .catch(error => {
         console.error('Fetch failed:', error);
@@ -117,7 +128,9 @@ const Home = () => {
   useEffect(() => {
     handleSearch(search)
 
-  }, [search])
+  }, [search]);
+
+
 
 
 
@@ -133,7 +146,7 @@ const Home = () => {
         </div>
 
 
-        
+
         <div className="table-container">
           {!loading && vehicles.length === 0 ? (
             <div style={{ textAlign: 'center' }}>
@@ -151,6 +164,8 @@ const Home = () => {
                   <th style={{ fontSize: 16 }}>CNIC</th>
                   <th style={{ fontSize: 16 }}>Rent/Day</th>
                   <th style={{ fontSize: 16 }}>City</th>
+                  <th style={{ fontSize: 16 }}>Category</th>
+                  <th style={{ fontSize: 16 }}>Body Type</th>
                   <th style={{ fontSize: 16 }}>Images</th>
                   <th style={{ fontSize: 16 }}>Delete</th>
                   <th style={{ fontSize: 16 }}>Approve</th>
@@ -171,6 +186,17 @@ const Home = () => {
                     <td style={{ fontSize: 15 }}>{vehicle.owner?.cnic}</td>
                     <td style={{ fontSize: 15 }}>{vehicle.dailyRent} PKR</td>
                     <td style={{ fontSize: 15 }}>{vehicle.city}</td>
+
+                    <td style={{ fontSize: 15 }}>{CategoryDispatcher(vehicle)} <BiPencil onClick={() => {
+                      setisCategory(true); setcurrentCateg(CategoryDispatcher(vehicle)); setselectedCar(vehicle)
+                    }} style={{ cursor: 'pointer' }} /></td>
+
+                    <td style={{ fontSize: 15 }}>{vehicle.vehicleType}  <BiPencil onClick={() => {
+                      setisBodyType(true); setselectedCar(vehicle)
+                    }} style={{ cursor: 'pointer' }} /></td>
+
+
+
                     <td style={{ fontSize: 15 }}>
                       <span onClick={() => openImageModal(vehicle.images)} className='view-images'>
                         View Images
@@ -187,7 +213,7 @@ const Home = () => {
                         } catch (error) {
                           setactionReload(false);
                         }
-                        finally{
+                        finally {
                           setactionReload(false)
                         }
                       }} className="delete-icon" />
@@ -198,12 +224,12 @@ const Home = () => {
                         await adminServices.approveAd(vehicle.id);
                         localStorage.setItem('pages', JSON.stringify(pages));
                         await fetchCars()
-                        
+
                       } catch (error) {
                         setactionReload(false)
 
                       }
-                      finally{
+                      finally {
                         setactionReload(false)
                       }
                     }}>
@@ -213,19 +239,19 @@ const Home = () => {
                     <td >
                       <MdAddBox
 
-                      onClick={async() =>{
-                      try {
-                        
-                        setaddCredits(true);
-                        localStorage.setItem('pages', JSON.stringify(pages));
-                        setuserId(vehicle.ownerId);
-                        setcredits(vehicle.owner?.credits as number)
-                      } catch (error) {
-                        
-                      }
-                      
-                    }}
-                       className="add-icon" />
+                        onClick={async () => {
+                          try {
+
+                            setaddCredits(true);
+                            localStorage.setItem('pages', JSON.stringify(pages));
+                            setuserId(vehicle.ownerId);
+                            setcredits(vehicle.owner?.credits as number)
+                          } catch (error) {
+
+                          }
+
+                        }}
+                        className="add-icon" />
                     </td>
 
                   </tr>
@@ -261,7 +287,10 @@ const Home = () => {
           </div>
         )}
         <CreditModal show={addCredits} onClose={setaddCredits} id={userId} creditsPass={credits} fetchCars={fetchCars} />
-        <LoadingModal show={actionReload} onClose={setactionReload}/>
+        <LoadingModal show={actionReload} onClose={setactionReload} />
+        <CategoryModal show={isCategory} onClose={setisCategory} category={currentCateg} selectedCar={selectedCar} fetchCars={fetchCars} />
+        <BodyTypeModal show={isBodyType} onClose={setisBodyType} selectedCar={selectedCar} fetchCars={fetchCars} />
+
         <div style={{ padding: 10, display: 'flex', flexDirection: 'row', gap: 20 }}>
           <button disabled={!hasMoreData} onClick={() => { setpages(pages + 1), localStorage.setItem('pages', JSON.stringify(pages)) }} style={{ padding: 10, backgroundColor: '#FFD200', borderRadius: '20px', cursor: 'pointer' }}>
             {loading ? <div className='loader'></div> : 'Load More'}

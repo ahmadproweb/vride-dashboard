@@ -22,7 +22,8 @@ export const updateData=async(data:Car[])=>{
                 name:user?.name,
                 cnic:user?.cnic,
                 phone:user?.phone,
-                credits:user?.credits
+                credits:user?.credits,
+                userType:user?.userType
             
             }
         }
