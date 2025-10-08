@@ -21,13 +21,15 @@ class UserDataService{
                 user: Partial<UserAttributes>,
                 userId: number
         ): Promise<any> {
+            console.log(userId,'');
+            
 
             const payload = Object.fromEntries(
-                Object.entries(user).filter(([_,value])=>value! == undefined && value !== "")
+                Object.entries(user).filter(([_,value])=>value!==undefined && value!=="")
             ) as Partial<UserAttributes>
 
             return this.apiClient.put<Partial<UserAttributes>,any>(
-                `${userId}/adminUser`,payload,
+                `/${userId}/adminUser`,payload,
                 
             )
                 

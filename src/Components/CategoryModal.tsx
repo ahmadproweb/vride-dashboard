@@ -16,10 +16,15 @@ const CategoryModal = ({ show, onClose, category, selectedCar, fetchCars }: {
     fetchCars:any;
 }) => {
 
+    console.log(selectedCar,'');
+    
+    
 
     if (!show) return null;
 
     const changeCategory = async (cat: string) => {
+        console.log(cat,'');
+        
         const ct = cat.trim();
         const catg = category.trim();
 
