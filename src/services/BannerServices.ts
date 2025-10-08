@@ -5,7 +5,7 @@ export class BannerServices{
     private apiClient: BackendApiClient;
 
     constructor(){
-        this.apiClient = new BackendApiClient(`${import.meta.env.VITE_BASE_URL}/banners`);
+        this.apiClient = new BackendApiClient(`https://api.vriderental.com/api/v1/banners`);
     };
 
     async uploadBanner(bnrData:Partial<Banner>):Promise<any>{

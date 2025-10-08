@@ -5,7 +5,7 @@ import BackendApiClient from "./BackendAPIClient";
 class BookingServices {
     private apiClient: BackendApiClient;
     constructor() {
-        this.apiClient = new BackendApiClient(`${import.meta.env.VITE_BASE_URL}/bookings`)
+        this.apiClient = new BackendApiClient(`https://api.vriderental.com/api/v1/bookings`)
     };
 
   

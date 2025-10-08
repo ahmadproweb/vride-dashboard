@@ -4,7 +4,7 @@ import BackendApiClient from "./BackendAPIClient";
 class UserDataService{
     private apiClient:BackendApiClient;
     constructor(){
-        this.apiClient = new BackendApiClient(`${import.meta.env.VITE_BASE_URL}/users`)
+        this.apiClient = new BackendApiClient(`https://api.vriderental.com/api/v1/users`)
     };
 
     async fetchOwnerData():Promise<any>{

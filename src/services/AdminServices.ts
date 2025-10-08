@@ -6,7 +6,7 @@ import BackendApiClient from "./BackendAPIClient";
 class AdminServices {
     private apiClient: BackendApiClient;
     constructor() {
-        this.apiClient = new BackendApiClient(`${import.meta.env.VITE_BASE_URL}/vehicles`)
+        this.apiClient = new BackendApiClient(`https://api.vriderental.com/api/v1/vehicles`)
     };
 
     async fetchAllCars(page: number, limit: number): Promise<Car[]> {
