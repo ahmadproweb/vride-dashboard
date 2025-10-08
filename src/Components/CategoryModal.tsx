@@ -27,6 +27,8 @@ const CategoryModal = ({ show, onClose, category, selectedCar, fetchCars }: {
         
         const ct = cat.trim();
         const catg = category.trim();
+        console.log(catg,'');
+        
 
         if (ct === "Featured" && catg === "Luxury") {
             const carData: Partial<Car> = {
@@ -39,10 +41,10 @@ const CategoryModal = ({ show, onClose, category, selectedCar, fetchCars }: {
 
 
         }
-        else if (ct === "Featured" && catg === "Rental") {
+        else if (ct === "Featured" && catg === "Company") {
 
             const userData: Partial<UserAttributes> = {
-                userType: 'user'
+                userType:'user'
             }
 
             await userService.updateUser(userData, selectedCar?.ownerId || 0);
@@ -67,7 +69,7 @@ const CategoryModal = ({ show, onClose, category, selectedCar, fetchCars }: {
         else if (ct === "Featured" && catg === "Company (Luxury)") {
 
             const userData: Partial<UserAttributes> = {
-                userType: 'user'
+                userType:'user'
             }
 
             await userService.updateUser(userData, selectedCar?.ownerId || 0);
@@ -86,7 +88,7 @@ const CategoryModal = ({ show, onClose, category, selectedCar, fetchCars }: {
         else if (ct === "Featured" && catg === "Company (Protocol)") {
 
             const userData: Partial<UserAttributes> = {
-                userType: 'user'
+                userType:'user'
             }
 
             await userService.updateUser(userData, selectedCar?.ownerId || 0);
@@ -115,9 +117,9 @@ const CategoryModal = ({ show, onClose, category, selectedCar, fetchCars }: {
             onClose(!show)
 
         }
-        else if (ct === "Luxury" && catg === "Rental") {
+        else if (ct === "Luxury" && catg === "Company") {
             const userData: Partial<UserAttributes> = {
-                userType: 'admin'
+                userType:'admin'
             }
 
             await userService.updateUser(userData, selectedCar?.ownerId || 0);
@@ -148,7 +150,7 @@ const CategoryModal = ({ show, onClose, category, selectedCar, fetchCars }: {
         else if (ct === "Luxury" && catg === "Company (Luxury)") {
 
             const userData: Partial<UserAttributes> = {
-                userType: 'user'
+                userType:'user'
             }
 
             await userService.updateUser(userData, selectedCar?.ownerId || 0);
@@ -159,7 +161,7 @@ const CategoryModal = ({ show, onClose, category, selectedCar, fetchCars }: {
 
         else if (ct === "Luxury" && catg === "Company (Protocol)") {
             const userData: Partial<UserAttributes> = {
-                userType: 'user'
+                userType:'user'
             }
 
             await userService.updateUser(userData, selectedCar?.ownerId || 0);
@@ -198,9 +200,9 @@ const CategoryModal = ({ show, onClose, category, selectedCar, fetchCars }: {
 
 
         }
-        else if (ct === "Protocol" && catg === "Rental") {
+        else if (ct === "Protocol" && catg === "Company") {
             const userData: Partial<UserAttributes> = {
-                userType: 'user'
+                userType:'user'
             }
 
             await userService.updateUser(userData, selectedCar?.ownerId || 0);
@@ -217,7 +219,7 @@ const CategoryModal = ({ show, onClose, category, selectedCar, fetchCars }: {
 
         else if (ct === "Protocol" && catg === "Company (Luxury)") {
             const userData: Partial<UserAttributes> = {
-                userType: 'user'
+                userType:'user'
             }
 
             await userService.updateUser(userData, selectedCar?.ownerId || 0);
@@ -234,7 +236,7 @@ const CategoryModal = ({ show, onClose, category, selectedCar, fetchCars }: {
 
         else if (ct === "Protocol" && catg === "Company (Protocol)") {
             const userData: Partial<UserAttributes> = {
-                userType: 'user'
+                userType:'user'
             }
 
             await userService.updateUser(userData, selectedCar?.ownerId || 0);
@@ -243,9 +245,9 @@ const CategoryModal = ({ show, onClose, category, selectedCar, fetchCars }: {
 
 
         }
-        else if (ct === "Rental" && catg === "Featured") {
+        else if (ct === "Company" && catg === "Featured") {
             const userData: Partial<UserAttributes> = {
-                userType: 'admin'
+                userType:'admin'
             }
 
             await userService.updateUser(userData, selectedCar?.ownerId || 0);
@@ -253,7 +255,7 @@ const CategoryModal = ({ show, onClose, category, selectedCar, fetchCars }: {
             onClose(!show)
 
         }
-        else if (ct === "Rental" && catg === "Protocol") {
+        else if (ct === "Company" && catg === "Protocol") {
             const carData: Partial<Car> = {
                 isBulletProof: false,
                 securityDetails: null as any
@@ -261,21 +263,21 @@ const CategoryModal = ({ show, onClose, category, selectedCar, fetchCars }: {
 
             await adminServices.updateCar(selectedCar?.id || 0, carData);
             const userData: Partial<UserAttributes> = {
-                userType: 'admin'
+                userType:'admin'
             }
 
             await userService.updateUser(userData, selectedCar?.ownerId || 0);
             await fetchCars();
             onClose(!show)
         }
-        else if (ct === "Rental" && catg === "Luxury") {
+        else if (ct === "Company" && catg === "Luxury") {
             const carData: Partial<Car> = {
                 isBulletProof: false,
             }
 
             await adminServices.updateCar(selectedCar?.id || 0, carData);
             const userData: Partial<UserAttributes> = {
-                userType: 'admin'
+                userType:'admin'
             }
 
             await userService.updateUser(userData, selectedCar?.ownerId || 0);
@@ -283,7 +285,7 @@ const CategoryModal = ({ show, onClose, category, selectedCar, fetchCars }: {
             onClose(!show)
         }
 
-        else if (ct === "Rental" && catg === "Company (Luxury)") {
+        else if (ct === "Company" && catg === "Company (Luxury)") {
 
             const carData: Partial<Car> = {
                 weddingBooking: false,
@@ -296,7 +298,7 @@ const CategoryModal = ({ show, onClose, category, selectedCar, fetchCars }: {
 
         }
 
-        else if (ct === "Rental" && catg === "Company (Protocol)") {
+        else if (ct === "Company" && catg === "Company (Protocol)") {
 
             const carData: Partial<Car> = {
                 isBulletProof: false,
@@ -343,8 +345,8 @@ const CategoryModal = ({ show, onClose, category, selectedCar, fetchCars }: {
                             Luxury
                         </p>
                     </div>
-                    <div onClick={() => changeCategory('Rental')} style={{ borderBottom: '1px solid grey', padding: 3, fontSize: 22, cursor: 'pointer', marginTop: 5 }}>
-                        Rental
+                    <div onClick={() => changeCategory('Company')} style={{ borderBottom: '1px solid grey', padding: 3, fontSize: 22, cursor: 'pointer', marginTop: 5 }}>
+                        Company
                     </div>
                     <div onClick={() => changeCategory('Protocol')} style={{ borderBottom: '1px solid grey', padding: 3, fontSize: 22, cursor: 'pointer', marginTop: 5 }}>
                         Protocol

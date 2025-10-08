@@ -37,15 +37,15 @@ const AdsDisplay = () => {
         <h3 style={styles.title}>Active Advertisements</h3>
         <div style={styles.stats}>
           <span style={styles.statItem}>
-            Total: <strong>{ads.length}</strong>
+            Total: <strong>{ads?.length}</strong>
           </span>
           <span style={styles.statItem}>
-            Active: <strong>{ads.filter((ad) => ad.status).length}</strong>
+            Active: <strong>{ads?.filter((ad) => ad.status).length}</strong>
           </span>
         </div>
       </div>
 
-      {ads.length === 0 ? (
+      {ads?.length === 0 ? (
         <div style={styles.emptyState}>
           <div style={styles.emptyIcon}>📢</div>
           <h4 style={styles.emptyTitle}>No advertisements yet</h4>
@@ -53,7 +53,7 @@ const AdsDisplay = () => {
         </div>
       ) : (
         <div style={styles.grid}>
-          {ads.map((ad) => (
+          {ads?.map((ad) => (
             <div key={ad.id} style={styles.card}>
               <div style={styles.imageContainer}>
                 <img src={ad.bnrImg as any || "/placeholder.svg"} alt={ad.title || `Banner ${ad.id}`} style={styles.image} />

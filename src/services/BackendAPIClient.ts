@@ -5,7 +5,7 @@ class BackendApiClient {
     private apiClient: AxiosInstance;
     constructor(baseURL: string) {
         this.apiClient = axios.create({
-            baseURL: baseURL || import.meta.env.VITE_PUBLIC_URL,
+            baseURL: baseURL || import.meta.env.VITE_BASE_URL,
             headers: {
                 "Content-Type": "application/json"
             }
